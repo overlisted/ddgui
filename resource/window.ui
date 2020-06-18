@@ -27,8 +27,7 @@
                   <object class="GtkButton" id="button-go">
                     <property name="label" translatable="yes">Go!</property>
                     <property name="visible">True</property>
-                    <property name="action_name">app.go</property>
-                    <property name="sensitive">False</property>
+                    <property name="action_name">win.runDD</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>

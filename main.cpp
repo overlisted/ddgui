@@ -2,11 +2,35 @@
 
 struct DDGUI: Gtk::Application {
   struct Window: Gtk::ApplicationWindow {
+    Gtk::ComboBoxText* sourceSelect = nullptr;
+    Gtk::ComboBoxText* destinationSelect = nullptr;
+    Gtk::SpinButton* bsSelect = nullptr;
+    Gtk::Button* agreeButton = nullptr;
+    Gtk::Button* goButton = nullptr;
+
     [[maybe_unused]] Window(
       BaseObjectType* super,
       const Glib::RefPtr<Gtk::Builder>& builder
     ): Gtk::ApplicationWindow(super) {
+      builder->get_widget("select-source", sourceSelect);
+      builder->get_widget("select-destination", destinationSelect);
+      builder->get_widget("select-bs", bsSelect);
+      builder->get_widget("button-agree", agreeButton);
+      builder->get_widget("button-go", goButton);
 
+      add_action("agree", sigc::mem_fun(this, &DDGUI::Window::agreeOverwriting));
+      add_action("runDD", sigc::mem_fun(this, &DDGUI::Window::runDD));
+
+      agreeButton->set_sensitive();
+      goButton->set_sensitive(false);
+    }
+
+    void agreeOverwriting() const {
+      goButton->set_sensitive();
+    }
+
+    void runDD() const {
+      g_print("not implemented");
     }
   };
 
