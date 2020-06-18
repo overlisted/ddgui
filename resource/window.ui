@@ -24,7 +24,7 @@
                 <property name="visible">True</property>
                 <property name="layout_style">expand</property>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="button-go">
                     <property name="label" translatable="yes">Go!</property>
                     <property name="visible">True</property>
                     <property name="action_name">app.go</property>
@@ -37,11 +37,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="button-agree">
                     <property name="label" translatable="yes">Agree</property>
                     <property name="visible">True</property>
-                    <property name="action_name">app.agree</property>
-                    <property name="name">button-agree</property>
+                    <property name="action_name">win.agree</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -78,8 +77,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSpinButton">
-            <property name="name">select-bs</property>
+          <object class="GtkSpinButton" id="select-bs">
             <property name="visible">True</property>
             <property name="caps_lock_warning">False</property>
             <property name="input_purpose">number</property>
@@ -94,8 +92,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBoxText">
-            <property name="name">select-destination</property>
+          <object class="GtkComboBoxText" id="select-destination">
             <property name="visible">True</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
@@ -111,8 +108,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBoxText">
-            <property name="name">select-source</property>
+          <object class="GtkComboBoxText" id="select-source">
             <property name="visible">True</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
