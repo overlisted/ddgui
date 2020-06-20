@@ -26,14 +26,18 @@ DDSession::DDSession(
 
 DDSession::~DDSession() {
   delete[] buffer;
+
+  source->close();
+  destination->close();
 }
 
 void DDSession::run() {
-  while(progress > size) {
-    source->read(buffer, bufferSize);
-    destination->write(buffer, bufferSize);
+  while(progress < size) {
+    const gsize remainingSize = MIN(bufferSize, size - progress);
+
+    source->read(buffer, remainingSize);
+    destination->write(buffer, remainingSize);
 
     progress = source->tell();
-    g_print("Progress: %ld", progress);
   }
 }
