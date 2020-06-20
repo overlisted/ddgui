@@ -21,7 +21,7 @@ add_custom_target(
   VERBATIM
 )
 
-add_executable(ddgui ${RESOURCES_COMPILATION} main.cpp dd.h dd.cpp)
+add_executable(ddgui ${RESOURCES_COMPILATION} main.cpp dd.h dd.cpp ddgui.cpp ddgui.h)
 add_dependencies(ddgui resources)
 
 target_include_directories(ddgui PRIVATE ${GTKMM_INCLUDE_DIRS})
