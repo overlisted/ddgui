@@ -34,15 +34,13 @@ void DDGUI::Window::agreeOverwriting() const {
 }
 
 void DDGUI::Window::runDD() const {
-  auto* session = new DDSession(
+  DDSession session = DDSession(
     Gio::File::create_for_path(sourceSelect->get_active_text()),
     Gio::File::create_for_path(destinationSelect->get_active_text()),
     bsSelect->get_value_as_int()
   );
 
-  session->run();
-
-  delete session;
+  session.run();
 }
 
 void DDGUI::Window::onSelectChanged(Gtk::ComboBoxText *widget) {
