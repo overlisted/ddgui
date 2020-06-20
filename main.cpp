@@ -9,6 +9,8 @@
 
 struct DDGUI: Gtk::Application {
   struct Window: Gtk::ApplicationWindow {
+    #define ID_SELECT_FILE "file-select"
+
     Gtk::ComboBoxText* sourceSelect = nullptr;
     Gtk::ComboBoxText* destinationSelect = nullptr;
     Gtk::SpinButton* bsSelect = nullptr;
@@ -26,8 +28,11 @@ struct DDGUI: Gtk::Application {
       builder->get_widget("button-go", goButton);
 
       #define STRING_SELECT_FILE "Select a file..."
-      sourceSelect->append(STRING_SELECT_FILE);
-      destinationSelect->append(STRING_SELECT_FILE);
+      sourceSelect->append(ID_SELECT_FILE, STRING_SELECT_FILE);
+      destinationSelect->append(ID_SELECT_FILE, STRING_SELECT_FILE);
+
+      sourceSelect->signal_changed().connect(sigc::mem_fun(this, &DDGUI::Window::onSourceChanged));
+      destinationSelect->signal_changed().connect(sigc::mem_fun(this, &DDGUI::Window::onDestinationChanged));
 
       for(const auto& path: getAllDevices()) {
         Glib::ustring unicoded(path);
@@ -57,6 +62,34 @@ struct DDGUI: Gtk::Application {
       session->run();
 
       delete session;
+    }
+
+    void onSourceChanged() {
+      onSelectChanged(sourceSelect);
+    }
+
+    void onDestinationChanged() {
+      onSelectChanged(destinationSelect);
+    }
+
+    void onSelectChanged(Gtk::ComboBoxText* widget) {
+      if(widget->get_active_id() == ID_SELECT_FILE) {
+        auto chooser = Glib::RefPtr<Gtk::FileChooserDialog>(new Gtk::FileChooserDialog(
+          *this,
+          "Select a file",
+          Gtk::FILE_CHOOSER_ACTION_OPEN
+        ));
+
+        chooser->add_button("_Cancel", GTK_RESPONSE_CANCEL);
+        chooser->add_button("_Open", GTK_RESPONSE_ACCEPT);
+
+        if(chooser->run() == Gtk::RESPONSE_ACCEPT) {
+          Glib::ustring filename = chooser->get_file()->get_parse_name();
+
+          widget->append(filename);
+          widget->set_active_text(filename);
+        }
+      }
     }
   };
 
