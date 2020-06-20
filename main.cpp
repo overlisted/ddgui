@@ -1,4 +1,10 @@
-#include "gtkmm.h"
+#include <gtkmm/application.h>
+#include <gtkmm/button.h>
+#include <gtkmm/spinbutton.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/applicationwindow.h>
+#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/builder.h>
 #include "dd.h"
 
 struct DDGUI: Gtk::Application {
