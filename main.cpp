@@ -1,4 +1,5 @@
 #include "gtkmm.h"
+#include "dd.h"
 
 struct DDGUI: Gtk::Application {
   struct Window: Gtk::ApplicationWindow {
@@ -18,6 +19,17 @@ struct DDGUI: Gtk::Application {
       builder->get_widget("button-agree", agreeButton);
       builder->get_widget("button-go", goButton);
 
+      #define STRING_SELECT_FILE "Select a file..."
+      sourceSelect->append(STRING_SELECT_FILE);
+      destinationSelect->append(STRING_SELECT_FILE);
+
+      for(const auto& path: getAllDevices()) {
+        Glib::ustring unicoded(path);
+
+        sourceSelect->append(unicoded);
+        destinationSelect->append(unicoded);
+      }
+
       add_action("agree", sigc::mem_fun(this, &DDGUI::Window::agreeOverwriting));
       add_action("runDD", sigc::mem_fun(this, &DDGUI::Window::runDD));
 
@@ -30,7 +42,15 @@ struct DDGUI: Gtk::Application {
     }
 
     void runDD() const {
-      g_print("not implemented");
+      auto* session = new DDSession(
+        Gio::File::create_for_path(sourceSelect->get_active_text()),
+        Gio::File::create_for_path(destinationSelect->get_active_text()),
+        bsSelect->get_value_as_int()
+      );
+
+      session->run();
+
+      delete session;
     }
   };
 
