@@ -74,17 +74,17 @@ struct DDGUI: Gtk::Application {
 
     void onSelectChanged(Gtk::ComboBoxText* widget) {
       if(widget->get_active_id() == ID_SELECT_FILE) {
-        auto chooser = Glib::RefPtr<Gtk::FileChooserDialog>(new Gtk::FileChooserDialog(
+        Gtk::FileChooserDialog chooser = Gtk::FileChooserDialog(
           *this,
           "Select a file",
           Gtk::FILE_CHOOSER_ACTION_OPEN
-        ));
+        );
 
-        chooser->add_button("_Cancel", GTK_RESPONSE_CANCEL);
-        chooser->add_button("_Open", GTK_RESPONSE_ACCEPT);
+        chooser.add_button("_Cancel", GTK_RESPONSE_CANCEL);
+        chooser.add_button("_Open", GTK_RESPONSE_ACCEPT);
 
-        if(chooser->run() == Gtk::RESPONSE_ACCEPT) {
-          Glib::ustring filename = chooser->get_file()->get_parse_name();
+        if(chooser.run() == Gtk::RESPONSE_ACCEPT) {
+          Glib::ustring filename = chooser.get_file()->get_parse_name();
 
           widget->append(filename);
           widget->set_active_text(filename);
