@@ -36,6 +36,9 @@ void DDGUI::Window::agreeOverwriting() const {
 }
 
 void DDGUI::Window::runDD() {
+  agreeButton->set_sensitive(false);
+  goButton->set_sensitive(false);
+
   DDSession session = DDSession(
     Gio::File::create_for_path(sourceSelect->get_active_text()),
     Gio::File::create_for_path(destinationSelect->get_active_text()),
@@ -51,6 +54,9 @@ void DDGUI::Window::runDD() {
 
   sessionThread.join();
   g_print("Finished!\n");
+
+  agreeButton->set_sensitive();
+  goButton->set_sensitive(false);
 }
 
 void DDGUI::Window::onSelectChanged(Gtk::ComboBoxText *widget) {
