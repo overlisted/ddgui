@@ -12,6 +12,9 @@
 
 struct DDGUI: Gtk::Application {
   struct Selector: Gtk::ComboBoxText {
+    #define ID_SELECT_FILE "file-select"
+    #define STRING_SELECT_FILE "Select a file..."
+
     [[maybe_unused]] Selector(BaseObjectType* super, const Glib::RefPtr<Gtk::Builder>& builder);
 
     void on_changed() override;
@@ -26,9 +29,6 @@ struct DDGUI: Gtk::Application {
   };
 
   struct Window: Gtk::ApplicationWindow {
-    #define ID_SELECT_FILE "file-select"
-    #define STRING_SELECT_FILE "Select a file..."
-
     Selector* sourceSelect = nullptr;
     Selector* destinationSelect = nullptr;
     Gtk::SpinButton* bsSelect = nullptr;
