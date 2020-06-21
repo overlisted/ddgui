@@ -3,7 +3,7 @@
 #include "ddgui.h"
 
 [[maybe_unused]] DDGUI::Window::Window(
-  BaseObjectType* super,const Glib::RefPtr<Gtk::Builder>& builder
+  BaseObjectType* super, const Glib::RefPtr<Gtk::Builder>& builder
 ): Gtk::ApplicationWindow(super) {
   builder->get_widget("select-source", sourceSelect);
   builder->get_widget("select-destination", destinationSelect);
@@ -14,8 +14,8 @@
   sourceSelect->append(ID_SELECT_FILE, STRING_SELECT_FILE);
   destinationSelect->append(ID_SELECT_FILE, STRING_SELECT_FILE);
 
-  sourceSelect->signal_changed().connect(sigc::mem_fun(this, &DDGUI::Window::onSourceChanged));
-  destinationSelect->signal_changed().connect(sigc::mem_fun(this, &DDGUI::Window::onDestinationChanged));
+  sourceSelect->signal_changed().connect(sigc::mem_fun(*this, &DDGUI::Window::onSourceChanged));
+  destinationSelect->signal_changed().connect(sigc::mem_fun(*this, &DDGUI::Window::onDestinationChanged));
 
   for(const auto& path: getAllDevices()) {
     Glib::ustring unicoded(path);
@@ -24,8 +24,8 @@
     destinationSelect->append(unicoded);
   }
 
-  add_action("agree", sigc::mem_fun(this, &DDGUI::Window::agreeOverwriting));
-  add_action("runDD", sigc::mem_fun(this, &DDGUI::Window::runDD));
+  add_action("agree", sigc::mem_fun(*this, &DDGUI::Window::agreeOverwriting));
+  add_action("runDD", sigc::mem_fun(*this, &DDGUI::Window::runDD));
 
   agreeButton->set_sensitive();
   goButton->set_sensitive(false);
