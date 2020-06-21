@@ -11,12 +11,26 @@
 #include "dd.h"
 
 struct DDGUI: Gtk::Application {
+  struct Selector: Gtk::ComboBoxText {
+    [[maybe_unused]] Selector(BaseObjectType* super, const Glib::RefPtr<Gtk::Builder>& builder);
+
+    void on_changed() override;
+    void on_drag_data_received(
+      const Glib::RefPtr<Gdk::DragContext>& context,
+      int x,
+      int y,
+      const Gtk::SelectionData& selectionData,
+      guint info,
+      guint time
+    ) override;
+  };
+
   struct Window: Gtk::ApplicationWindow {
     #define ID_SELECT_FILE "file-select"
     #define STRING_SELECT_FILE "Select a file..."
 
-    Gtk::ComboBoxText* sourceSelect = nullptr;
-    Gtk::ComboBoxText* destinationSelect = nullptr;
+    Selector* sourceSelect = nullptr;
+    Selector* destinationSelect = nullptr;
     Gtk::SpinButton* bsSelect = nullptr;
     Gtk::Button* agreeButton = nullptr;
     Gtk::Button* goButton = nullptr;
@@ -28,15 +42,6 @@ struct DDGUI: Gtk::Application {
     void agreeOverwriting() const;
 
     void runDD();
-
-    void onSelectChanged(Gtk::ComboBoxText* widget);
-    void onSourceChanged() {
-      onSelectChanged(sourceSelect);
-    }
-
-    void onDestinationChanged() {
-      onSelectChanged(destinationSelect);
-    }
   };
 
   DDGUI(): Gtk::Application("net.overlisted.ddgui", Gio::APPLICATION_FLAGS_NONE) {}
