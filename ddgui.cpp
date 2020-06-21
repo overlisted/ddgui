@@ -87,6 +87,22 @@ void DDGUI::Selector::on_drag_data_received(
   goButton->set_sensitive(false);
 }
 
+void DDGUI::Window::progressThreadRun() const {
+  while(ddSession->progress < ddSession->size) {
+    g_print("Progress: %ld/%ld\n", ddSession->progress, ddSession->size);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+
+  ddSessionThread->join();
+  g_print("Finished!\n");
+
+  delete ddSession;
+  delete ddSessionThread;
+
+  agreeButton->set_sensitive();
+  goButton->set_sensitive(false);
+}
+
 void DDGUI::Window::agreeOverwriting() const {
   goButton->set_sensitive();
 }
@@ -95,24 +111,16 @@ void DDGUI::Window::runDD() {
   agreeButton->set_sensitive(false);
   goButton->set_sensitive(false);
 
-  DDSession session = DDSession(
+  ddSession = new DDSession(
     Gio::File::create_for_path(sourceSelect->get_active_text()),
     Gio::File::create_for_path(destinationSelect->get_active_text()),
     bsSelect->get_value_as_int()
   );
 
-  sessionThread = std::thread(sigc::mem_fun(session, &DDSession::run));
+  if(progressThread) progressThread->join();
 
-  while(session.progress < session.size) {
-    g_print("Progress: %ld/%ld\n", session.progress, session.size);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
-
-  sessionThread.join();
-  g_print("Finished!\n");
-
-  agreeButton->set_sensitive();
-  goButton->set_sensitive(false);
+  ddSessionThread = new std::thread(sigc::mem_fun(*ddSession, &DDSession::run));
+  progressThread = new std::thread(sigc::mem_fun(*this, &DDGUI::Window::progressThreadRun));
 }
 
 DDGUI::Window* DDGUI::createWindow() {

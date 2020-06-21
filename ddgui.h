@@ -35,12 +35,14 @@ struct DDGUI: Gtk::Application {
     Gtk::Button* agreeButton = nullptr;
     Gtk::Button* goButton = nullptr;
 
-    std::thread sessionThread;
+    DDSession* ddSession = nullptr;
+    std::thread* ddSessionThread = nullptr;
+    std::thread* progressThread = nullptr;
 
     [[maybe_unused]] Window(BaseObjectType* super, const Glib::RefPtr<Gtk::Builder>& builder);
 
+    void progressThreadRun() const;
     void agreeOverwriting() const;
-
     void runDD();
   };
 
