@@ -25,4 +25,4 @@ add_executable(ddgui ${RESOURCES_COMPILATION} main.cpp dd.h dd.cpp ddgui.cpp ddg
 add_dependencies(ddgui resources)
 
 target_include_directories(ddgui PRIVATE ${GTKMM_INCLUDE_DIRS})
-target_link_libraries(ddgui ${GTKMM_LIBRARIES} stdc++fs)
+target_link_libraries(ddgui ${GTKMM_LIBRARIES} stdc++fs pthread)

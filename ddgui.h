@@ -6,6 +6,8 @@
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/builder.h>
 
+#include <thread>
+
 #include "dd.h"
 
 struct DDGUI: Gtk::Application {
@@ -19,11 +21,13 @@ struct DDGUI: Gtk::Application {
     Gtk::Button* agreeButton = nullptr;
     Gtk::Button* goButton = nullptr;
 
+    std::thread sessionThread;
+
     [[maybe_unused]] Window(BaseObjectType* super, const Glib::RefPtr<Gtk::Builder>& builder);
 
     void agreeOverwriting() const;
 
-    void runDD() const;
+    void runDD();
 
     void onSelectChanged(Gtk::ComboBoxText* widget);
     void onSourceChanged() {

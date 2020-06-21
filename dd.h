@@ -1,6 +1,7 @@
-#include <filesystem>
 #include <glibmm/refptr.h>
 #include <giomm/file.h>
+
+#include <filesystem>
 
 std::vector<std::filesystem::path> getAllDevices();
 

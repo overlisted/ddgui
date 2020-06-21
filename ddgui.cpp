@@ -1,6 +1,8 @@
+#include <iostream>
+
 #include "ddgui.h"
 
-DDGUI::Window::Window(
+[[maybe_unused]] DDGUI::Window::Window(
   BaseObjectType* super,const Glib::RefPtr<Gtk::Builder>& builder
 ): Gtk::ApplicationWindow(super) {
   builder->get_widget("select-source", sourceSelect);
@@ -33,14 +35,22 @@ void DDGUI::Window::agreeOverwriting() const {
   goButton->set_sensitive();
 }
 
-void DDGUI::Window::runDD() const {
+void DDGUI::Window::runDD() {
   DDSession session = DDSession(
     Gio::File::create_for_path(sourceSelect->get_active_text()),
     Gio::File::create_for_path(destinationSelect->get_active_text()),
     bsSelect->get_value_as_int()
   );
 
-  session.run();
+  sessionThread = std::thread(sigc::mem_fun(session, &DDSession::run));
+
+  while(session.progress < session.size) {
+    g_print("Progress: %ld/%ld\n", session.progress, session.size);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+
+  sessionThread.join();
+  g_print("Finished!\n");
 }
 
 void DDGUI::Window::onSelectChanged(Gtk::ComboBoxText *widget) {
