@@ -2,12 +2,33 @@
 
 #include "ddgui.h"
 
+std::vector<Glib::ustring> split(const Glib::ustring& string, const Glib::ustring& delimiter) {
+  size_t start = 0, end, delimiterLength = delimiter.length();
+  Glib::ustring token;
+  std::vector<Glib::ustring> result;
+
+  while((end = string.find(delimiter, start)) != Glib::ustring::npos) {
+    token = string.substr(start, end - start);
+    start = end + delimiterLength;
+    result.push_back(token);
+  }
+
+  result.push_back(string.substr(start));
+
+  return result;
+}
+
 [[maybe_unused]] DDGUI::Selector::Selector(
   BaseObjectType* super, const Glib::RefPtr<Gtk::Builder>& builder
 ): Gtk::ComboBoxText(super) {
   append(ID_SELECT_FILE, STRING_SELECT_FILE);
 
   for(const auto& path: getAllDevices()) append(Glib::ustring(path));
+
+  drag_dest_set(
+    {Gtk::TargetEntry("STRING"), Gtk::TargetEntry("text/plain")},
+    Gtk::DEST_DEFAULT_ALL
+  );
 }
 
 void DDGUI::Selector::on_changed() {
@@ -23,10 +44,31 @@ void DDGUI::Selector::on_changed() {
     if(chooser.run() == Gtk::RESPONSE_ACCEPT) {
       Glib::ustring filename = chooser.get_file()->get_parse_name();
 
-      append(filename);
+      prepend(filename);
       set_active_text(filename);
     }
   }
+}
+
+void DDGUI::Selector::on_drag_data_received(
+  const Glib::RefPtr<Gdk::DragContext>& context,
+  int x,
+  int y,
+  const Gtk::SelectionData& selectionData,
+  guint info,
+  guint time
+) {
+  for(Glib::ustring& uri: split(selectionData.get_text(), "\n")) {
+    if(uri.empty()) continue;
+
+    Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(uri);
+    if(file->query_exists()) {
+      prepend(file->get_parse_name());
+      set_active_text(file->get_parse_name());
+    }
+  }
+
+  context->drag_finish(true, false, time);
 }
 
 [[maybe_unused]] DDGUI::Window::Window(
